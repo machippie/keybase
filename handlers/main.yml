@@ -1,0 +1,16 @@
+# Standards: 0.1
+---
+- name: Kill keybase
+  command: killall Keybase
+  register: keybase_kill
+  failed_when: keybase_kill.rc != 0 and "No matching processes belonging to you were found" not in keybase_kill.stderr
+  become: "{{ (keybase_user != ansible_user_id) | bool }}"
+  become_user: "{{ keybase_user }}"
+
+- name: Start keybase
+  when: keybase_started
+  command: open -g /Applications/Keybase.app
+  become: "{{ (keybase_user != ansible_user_id) | bool }}"
+  become_user: "{{ keybase_user }}"
+
+...

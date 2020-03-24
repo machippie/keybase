@@ -1,0 +1,10 @@
+# Standards: 0.1
+---
+# @var keybase_user:description: User to run user-specific commands
+# @var keybase_user:value: keybase_user | default(homebrew_user) | default(ansible_user_id)
+# keybase_user:
+
+# @var keybase_started:description: Start in background after install
+keybase_started: True
+
+...

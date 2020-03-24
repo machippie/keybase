@@ -1,0 +1,31 @@
+# Standards: 0.1
+---
+- name: Fact keybase user
+  set_fact:
+    keybase_user: "{{ keybase_user | default(homebrew_user) | default(ansible_user_id) }}"
+  tags:
+    - keybase
+
+- become: "{{ (keybase_user != ansible_user_id) | bool }}"
+  become_user: "{{ keybase_user }}"
+  block:
+    - name: Install required package
+      ignore_errors: True
+      homebrew_cask:
+        name: keybase
+        greedy: True
+        options: appdir=/Applications
+        accept_external_apps: False
+        state: upgraded
+      tags:
+        - keybase
+
+- name: Remove quarantine flag
+  register: keybase_quarantine
+  failed_when: keybase_quarantine.rc != 0 and "No such xattr" not in keybase_quarantine.stderr
+  changed_when: keybase_quarantine.rc == 0
+  command: xattr -d com.apple.quarantine /Applications/Keybase.app
+  tags:
+    - keybase
+
+...
